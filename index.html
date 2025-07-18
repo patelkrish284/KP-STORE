@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KP STORE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #00cec9;
+            --glass-color: rgba(15, 15, 35, 0.7);
+            --glow-color: rgba(108, 92, 231, 0.6);
+            --text-color: #f1f1f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f0f23;
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background video,
+        .background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 20px 0;
+            text-align: center;
+            color: white;
+            text-shadow: 0 0 10px var(--glow-color), 
+                         0 0 20px var(--glow-color), 
+                         0 0 30px var(--glow-color);
+            animation: glow 2s infinite alternate;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px var(--glow-color), 
+                             0 0 20px var(--glow-color);
+            }
+            to {
+                text-shadow: 0 0 15px var(--glow-color), 
+                             0 0 30px var(--glow-color), 
+                             0 0 45px var(--primary-color);
+            }
+        }
+
+        .banner {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin: 15px 0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .banner:hover {
+            transform: scale(1.01);
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .app-card {
+            background: var(--glass-color);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(108, 92, 231, 0.3);
+        }
+
+        .app-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 180px;
+            cursor: pointer;
+        }
+
+        .app-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .app-card:hover .app-image {
+            transform: scale(1.05);
+        }
+
+        .app-info {
+            padding: 20px;
+        }
+
+        .app-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+            width: 100%;
+            text-align: center;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.6);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            padding: 20px;
+        }
+
+        .social-link {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            color: var(--secondary-color);
+        }
+
+        /* Loading animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(108, 92, 231, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Ad container */
+        .ad-container {
+            width: 100%;
+            margin: 30px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .apps-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <!-- Background will be set via JS -->
+    </div>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <header>
+            <h1 class="title" id="storeTitle">KP STORE</h1>
+            <img src="https://via.placeholder.com/1200x400/6c5ce7/ffffff?text=KP+STORE" alt="Banner" class="banner" id="storeBanner">
+        </header>
+
+        <div class="ad-container" id="topAd">
+            <!-- Top ad will be injected here -->
+        </div>
+
+        <div class="apps-grid" id="appsGrid">
+            <!-- Apps will be loaded here -->
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="ad-container" id="middleAd">
+            <!-- Middle ad will be injected here -->
+        </div>
+
+        <div class="social-links" id="socialLinks">
+            <!-- Social links will be injected here -->
+        </div>
+
+        <div class="ad-container" id="bottomAd">
+            <!-- Bottom ad will be injected here -->
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBZbnzwwgZ0E3AOrPpwLWOcRJDxNYSY5k",
+            authDomain: "krish-e062a.firebaseapp.com",
+            databaseURL: "https://krish-e062a-default-rtdb.firebaseio.com",
+            projectId: "krish-e062a",
+            storageBucket: "krish-e062a.firebasestorage.app",
+            messagingSenderId: "667078887677",
+            appId: "1:667078887677:web:b94348c106c6f3e16d5694",
+            measurementId: "G-HT8G94QVDQ"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // DOM Elements
+        const storeTitle = document.getElementById('storeTitle');
+        const storeBanner = document.getElementById('storeBanner');
+        const appsGrid = document.getElementById('appsGrid');
+        const backgroundDiv = document.querySelector('.background');
+        const topAd = document.getElementById('topAd');
+        const middleAd = document.getElementById('middleAd');
+        const bottomAd = document.getElementById('bottomAd');
+        const socialLinks = document.getElementById('socialLinks');
+
+        // Initialize the store
+        function initStore() {
+            // Load data from Firebase
+            database.ref('store').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const storeData = snapshot.val();
+                    
+                    // Apply settings
+                    storeTitle.textContent = storeData.title || "KP STORE";
+                    storeBanner.src = storeData.banner || "https://via.placeholder.com/1200x400/6c5ce7/ffffff?text=KP+STORE";
+                    
+                    // Set background
+                    setBackground(storeData.background || "https://assets.mixkit.co/videos/preview/mixkit-abstract-digital-grid-with-glowing-lines-5192-large.mp4", 
+                                storeData.isVideoBg || true);
+                    
+                    // Render apps - handle both array and object formats
+                    if (storeData.apps) {
+                        const appsArray = Array.isArray(storeData.apps) ? 
+                            storeData.apps : 
+                            Object.keys(storeData.apps).map(key => ({ ...storeData.apps[key], id: key }));
+                        
+                        if (appsArray.length > 0) {
+                            renderApps(appsArray);
+                        } else {
+                            appsGrid.innerHTML = '<p>No apps available yet. Check back soon!</p>';
+                        }
+                    } else {
+                        appsGrid.innerHTML = '<p>No apps available yet. Check back soon!</p>';
+                    }
+                    
+                    // Set ads if exists
+                    if (storeData.ads) {
+                        // Clear all ads first
+                        topAd.innerHTML = '';
+                        middleAd.innerHTML = '';
+                        bottomAd.innerHTML = '';
+                        
+                        // Set the ad based on position
+                        if (storeData.ads.script) {
+                            const position = storeData.ads.position || 'top';
+                            if (position === 'top') {
+                                topAd.innerHTML = storeData.ads.script;
+                            } else if (position === 'middle') {
+                                middleAd.innerHTML = storeData.ads.script;
+                            } else if (position === 'bottom') {
+                                bottomAd.innerHTML = storeData.ads.script;
+                            }
+                        }
+                    }
+                    
+                    // Set social links if exists
+                    if (storeData.social) {
+                        renderSocialLinks(storeData.social);
+                    }
+                }
+            });
+        }
+
+        // Set background (image or video)
+        function setBackground(url, isVideo) {
+            backgroundDiv.innerHTML = '';
+            
+            if (isVideo) {
+                const video = document.createElement('video');
+                video.src = url;
+                video.autoplay = true;
+                video.loop = true;
+                video.muted = true;
+                video.playsInline = true;
+                backgroundDiv.appendChild(video);
+            } else {
+                const img = document.createElement('img');
+                img.src = url;
+                backgroundDiv.appendChild(img);
+            }
+        }
+
+        // Render apps in the main grid
+        function renderApps(apps) {
+            appsGrid.innerHTML = '';
+            
+            apps.forEach(app => {
+                const appCard = document.createElement('div');
+                appCard.className = 'app-card';
+                
+                // Image container
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'app-image-container';
+                
+                const img = document.createElement('img');
+                img.src = app.image || 'https://via.placeholder.com/300x180/6c5ce7/ffffff?text=App+Image';
+                img.alt = app.name || 'App Image';
+                img.className = 'app-image';
+                
+                // Make image clickable
+                imgContainer.addEventListener('click', () => {
+                    if (app.url) {
+                        window.open(app.url, '_blank');
+                    }
+                });
+                
+                imgContainer.appendChild(img);
+                
+                // App info
+                const appInfo = document.createElement('div');
+                appInfo.className = 'app-info';
+                
+                const appName = document.createElement('h3');
+                appName.className = 'app-name';
+                appName.textContent = app.name || 'App Name';
+                
+                const downloadBtn = document.createElement('a');
+                downloadBtn.href = app.url || '#';
+                downloadBtn.className = 'download-btn';
+                downloadBtn.textContent = app.btnText || "Download";
+                downloadBtn.target = '_blank';
+                
+                appInfo.appendChild(appName);
+                appInfo.appendChild(downloadBtn);
+                
+                appCard.appendChild(imgContainer);
+                appCard.appendChild(appInfo);
+                
+                appsGrid.appendChild(appCard);
+            });
+        }
+
+        // Render social links
+        function renderSocialLinks(social) {
+            socialLinks.innerHTML = '';
+            
+            if (social.youtube) {
+                socialLinks.innerHTML += `
+                    <a href="${social.youtube}" class="social-link" target="_blank">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                `;
+            }
+            
+            if (social.instagram) {
+                socialLinks.innerHTML += `
+                    <a href="${social.instagram}" class="social-link" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                `;
+            }
+            
+            if (social.telegram) {
+                socialLinks.innerHTML += `
+                    <a href="${social.telegram}" class="social-link" target="_blank">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                `;
+            }
+            
+            if (social.whatsapp) {
+                socialLinks.innerHTML += `
+                    <a href="${social.whatsapp}" class="social-link" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                `;
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initStore);
+
+        // Long press on title to open admin (for testing)
+        let pressTimer;
+        storeTitle.addEventListener('mousedown', startPressTimer);
+        storeTitle.addEventListener('touchstart', startPressTimer);
+        storeTitle.addEventListener('mouseup', cancelPressTimer);
+        storeTitle.addEventListener('mouseleave', cancelPressTimer);
+        storeTitle.addEventListener('touchend', cancelPressTimer);
+
+        function startPressTimer(e) {
+            e.preventDefault();
+            pressTimer = window.setTimeout(() => {
+                window.open('admin.html', '_blank');
+            }, 2000); // 2 seconds
+        }
+
+        function cancelPressTimer() {
+            if (pressTimer) {
+                clearTimeout(pressTimer);
+                pressTimer = null;
+            }
+        }
+    </script>
+</body>
+</html>
